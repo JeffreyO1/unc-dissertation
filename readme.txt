@@ -7,7 +7,7 @@ If you've come to this repo from a link in the UNC math grad resources Sakai pag
 
 ----------- USAGE -----------
 
-Add these files to your LaTeX editor's Template directory, if it has one. Optionally, create a subdirectory and name it "UNC Dissertation".
+Add these files to a convenient place like your LaTeX editor's Template directory, if it has one. Optionally, create a subdirectory and name it "UNC Dissertation". In order to use the class unc_dissertation.cls, you will need to move it to a directory that your IDE checks automagically, e.g., ~\Library\texmf\tex. For MacTeX, see https://pages.uoregon.edu/koch/texshop/whereisstuff.html. The remaining *.tex support files (abstract.tex, etc.) will need to be in the directory where you will be compiling your main file, e.g., dissertation.tex.
  
 At the beginning of your main .tex file, include the line:
 
