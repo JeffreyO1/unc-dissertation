@@ -6,6 +6,8 @@ If you've come to this repo from a link in the UNC math grad resources Sakai pag
 
 
 ----------- USAGE -----------
+
+Add these files to your LaTeX editor's Template directory, if it has one. Optionally, create a subdirectory and name it "UNC Dissertation".
  
 At the beginning of your main .tex file, include the line:
 
