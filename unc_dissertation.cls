@@ -1,5 +1,5 @@
 %% This is a class file for dissertations and theses at the University of North Carolina at Chapel Hill
-%% (specifically, for the Department of Mathematics). This version is `unc_dissertation.cls', based on `jakeuncdiss.cls', based on 
+%% (specifically, for the Department of Physics and Astronomy ). This version is `unc_dissertation.cls', based on `jakeuncdiss.cls', based on 
 %% `pikeuncdiss.cls'. Previous revisions by those listed below.
 %%
 %% It is based on the report class, from LaTeX v2.1 (LaTeX 2e).
@@ -96,17 +96,19 @@
 
 
 
-%--------------------------------------------------OPTIONS--------------------------------------------------
-%This package allows us to process options of the form `key=value' (see http://ctan.math.utah.edu/ctan/tex-archive/macros/latex/contrib/oberdiek/kvoptions.pdf).
+%--------------------------------------------------OPTIONS--------------------------------------------------%
+% This package allows us to process options of the form `key=value' (see http://ctan.math.utah.edu/ctan/tex-archive/macros/latex/contrib/oberdiek/kvoptions.pdf).
 \RequirePackage{kvoptions}
 
-%change these so that if anyone decides to change the filename in the future, they won't have to change all the variable names.
+% For a primer on writing LaTeX options for custom class files, see https://www.overleaf.com/learn/latex/Writing_your_own_class#Options
+
+% By default, kvoptions makes the family/prefix "filename"/"filename"@, e.g., unc_dissertation/unc_dissertation@. To keep all option declarations below independent of the filename (in case someone renames this class "something_else.cls", say) change these to a placeholder, say uncdiss/uncdiss@.
 \SetupKeyvalOptions{
   family=my,
   prefix=my@
 }
-%Note: \DeclareStringOption[default]{optionname} adds a new option optionname=<whatever>. It creates a new variable \my@optionname that contains the value of the option. It defaults to the value ``default''.
-%      \DeclareBoolOption[default]{optionname} adds a new option optionname=true or optionname=false. It defaults to the value ``default''. It creates a new if \ifmy@optionname that may be used to check the value of the option.
+% Note: \DeclareStringOption[default]{optionname} adds a new option optionname=<whatever>. It creates a new variable \my@optionname that contains the value of the option. It defaults to the value ``default''.
+% ------- \DeclareBoolOption[default]{optionname} adds a new option optionname=true or optionname=false. It defaults to the value ``default''. It creates a new if \ifmy@optionname that may be used to check the value of the option.
 
 
 %This command nullifys an option, so it doesn't get sent to the base class (report).
@@ -415,6 +417,7 @@
 \DeclareAuthorVariable*{dissdegree}
 %Full name of department and/or school (Department of Mathematics, Department of Physics, etc.).
 \DeclareAuthorVariable*{dissdept}
+
 \ifmy@doctoral
   \disstype{dissertation}
   \dissdegree{Doctor of Philosophy}
@@ -422,6 +425,7 @@
   \disstype{thesis}
   \dissdegree{Master of Science}
 \fi
+
 \dissdept{Department of Mathematics in the College of Arts and Sciences}
 
 %The blurb on the title page will be automatically constructed from the above information. If you need to change it, you can redefine this variable.
