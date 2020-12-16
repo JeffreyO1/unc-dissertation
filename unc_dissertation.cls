@@ -363,20 +363,14 @@
 %% This code was (mostly) copied from: 
 %%   http://tex.stackexchange.com/questions/93908/macro-for-declaring-variables-in-class-files
 
-% Do the branching between * and normal version
-\newcommand{\DeclareAuthorVariable}{%
-  \@ifstar{\my@DeclareAuthorVariable{\my@mandatory@var}}
-          {\my@DeclareAuthorVariable{\my@optional@var}}%
-}
-
 % The main command; the internal version of \foo is \my@foo
 % The macro \ting@foo is initialized to give an error or an info
 % message when used, so if the user doesn't provide a value for a
 % mandatory variable, we'll catch the issue. (Modified  to branch 
 % according to a variable having been given a value or not.)
 \newcommand{\my@DeclareAuthorVariable}[2]{%
-  \long\@namedef{my@#2}{#1{#2}}%
-  \long\@namedef{#2}##1{\long\@namedef{my@#2}{##1}\long\@namedef{my@#2@defined}{}}%
+  \long\@namedef{get#2}{#1{#2}}%
+  \long\@namedef{set#2}##1{\long\@namedef{get#2}{##1}\long\@namedef{#2@defined}{}}%
 }
 % The error and info messages
 \newcommand{\my@mandatory@var}[1]{%
@@ -392,8 +386,14 @@
      \expandafter\string\csname#1\endcsname}%
 }
 
+% Do the branching between * and normal version
+\newcommand{\DeclareAuthorVariable}{%
+  \@ifstar{\my@DeclareAuthorVariable{\my@mandatory@var}}
+          {\my@DeclareAuthorVariable{\my@optional@var}}%
+}
+
 % To allow for branching based on a variable having a value or not.
-\newcommand{\@ifauthorvariable}[3]{\@ifundefined{my@#1@defined}{#3}{#2}}
+\newcommand{\@ifauthorvariable}[3]{\@ifundefined{#1@defined}{#3}{#2}}
 
 % Examples:
 %   \DeclareAuthorVariable*{var}
@@ -419,30 +419,30 @@
 \DeclareAuthorVariable*{dissdept}
 
 \ifmy@doctoral
-  \disstype{dissertation}
-  \dissdegree{Doctor of Philosophy}
+  \setdisstype{dissertation}
+  \setdissdegree{Doctor of Philosophy}
 \else
-  \disstype{thesis}
-  \dissdegree{Master of Science}
+  \setdisstype{thesis}
+  \setdissdegree{Master of Science}
 \fi
 
-\dissdept{Department of Mathematics in the College of Arts and Sciences}
+\setdissdept{Department of Mathematics in the College of Arts and Sciences}
 
 %The blurb on the title page will be automatically constructed from the above information. If you need to change it, you can redefine this variable.
 \DeclareAuthorVariable*{dissblurb}
-\dissblurb{A \my@disstype{} submitted to the faculty at the University of North Carolina at Chapel Hill in partial fulfillment of the requirements for the degree of \my@dissdegree{} in the \my@dissdept.}
+\setdissblurb{A \getdisstype submitted to the faculty at the University of North Carolina at Chapel Hill in partial fulfillment of the requirements for the degree of \getdissdegree in the \getdissdept.}
 
 %The location. You shouldn't ever have to change this, unless UNC teleports to some other city or something.
 \DeclareAuthorVariable*{dissloc}
-\dissloc{Chapel Hill}
+\setdissloc{Chapel Hill}
 
 %The year the thesis is submitted (defaults to the current year).
 \DeclareAuthorVariable*{dissyear}
-\dissyear{\the\year}
+\setdissyear{\the\year}
 
 %Heading above the names of the committee members---hopefully this should never have to be changed.
 \DeclareAuthorVariable*{approvedby}
-\approvedby{Approved by:}
+\setapprovedby{Approved by:}
 
 %Name of advisor.
 \DeclareAuthorVariable*{advisor} 
@@ -454,11 +454,11 @@
 
 %A shortcut command to quickly set the names of the advisor and the 4 comittee members, in order.
 \newcommand{\committee}[5]{%
-  \advisor{#1}%
-  \readerA{#2}%
-  \readerB{#3}%
-  \readerC{#4}%
-  \readerD{#5}%
+  \setadvisor{#1}%
+  \setreaderA{#2}%
+  \setreaderB{#3}%
+  \setreaderC{#4}%
+  \setreaderD{#5}%
 }
 
 
@@ -468,15 +468,15 @@
 
 %The copyright year (defaults to submission year).
 \DeclareAuthorVariable*{cryear}
-\cryear{\my@dissyear}
+\setcryear{\getdissyear}
 
 %The name to appear on the copyright page (defaults to the author).
 \DeclareAuthorVariable*{crauthor}
-\crauthor{\@author}
+\setcrauthor{\getauthor}
 
 %The copyright blurb (defaults to ALL RIGHTS RESERVED).
 \DeclareAuthorVariable*{crblurb}
-\crblurb{\textls*[25]{ALL RIGHTS RESERVED}}
+\setcrblurb{\textls*[25]{ALL RIGHTS RESERVED}}
 
 
 
@@ -488,15 +488,15 @@
 
 %The abstract blurb (appears after the title of the abstract page, you shouldn't have to change this).
 \DeclareAuthorVariable*{abstractblurb}
-\abstractblurb{\@author: \@title\par (Under the direction of \my@advisor)} 
+\setabstractblurb{\@author: \@title\par (Under the direction of \getadvisor)} 
 
 % For those of us with two advisors (i.e., Rich and Roberto), comment above and uncomment below.
 % Need the { } to force a space between the first advisor's last name and the word "and."
-%\abstractblurb{\@author: \@title\par (Under the direction of \my@advisor{ }and \my@readerA)} 
+%\setabstractblurb{\@author: \@title\par (Under the direction of \getadvisor{ }and \getreaderA)} 
 
 %Width of the abstract blurb, specified as a percentage of the width of the body (i.e. the text area, not including margins). At 1.0 the blurb tends to look weird if you have a really long title, so defaults to .75.  
 \DeclareAuthorVariable*{abstractblurbwidth}
-\abstractblurbwidth{.75}
+\setabstractblurbwidth{.75}
 
 
 
@@ -508,7 +508,7 @@
 
 %Width of the dedication, as a percentage. (Behaves the same as \abstractblurbwidth.)
 \DeclareAuthorVariable*{dedicationwidth}
-\dedicationwidth{.75}
+\setdedicationwidth{.75}
 
 
 
@@ -517,17 +517,17 @@
 %%% The titles of various automatically constructed pages. %%%
 
 \DeclareAuthorVariable*{absname}
-\absname{Abstract}
+\setabsname{Abstract}
 \DeclareAuthorVariable*{tocname}
-\tocname{Table of Contents} 
+\settocname{Table of Contents} 
 \DeclareAuthorVariable*{lofname}
-\lofname{LIST OF FIGURES} 
+\setlofname{LIST OF FIGURES} 
 \DeclareAuthorVariable*{lotname}
-\lotname{LIST OF TABLES}
+\setlotname{LIST OF TABLES}
 \DeclareAuthorVariable*{loaname}
-\loaname{LIST OF ABBREVIATIONS} 
+\setloaname{LIST OF ABBREVIATIONS} 
 \DeclareAuthorVariable*{bblname}
-\bblname{REFERENCES} 
+\setbblname{REFERENCES} 
 
 
 
@@ -615,12 +615,12 @@
     \vspace{1in}%
     
     %The blurb
-    \my@dissblurb \par
+    \getdissblurb \par
     \vspace{1in}%
     
     %location and year
-    \my@dissloc \par
-    \my@dissyear \par
+    \getdissloc \par
+    \getdissyear \par
     \vspace{1in}%
     
   \end{center}
@@ -630,12 +630,12 @@
   %This varwidth box is as wide as the longest name inside it. The names align left inside the box, but the box itself goes as far right as it can because of the \hfill above.
   \hspace{4.666in}
   \begin{varwidth}{\textwidth} 
-	  \my@approvedby \par
-	  \my@advisor \par
-	  \my@readerA \par
-	  \my@readerB \par
-	  \my@readerC \par
-	  \my@readerD
+	  \getapprovedby \par
+	  \getadvisor \par
+	  \getreaderA \par
+	  \getreaderB \par
+	  \getreaderC \par
+	  \getreaderD
   \end{varwidth}
   \clearpage
 }
@@ -649,15 +649,15 @@
 	  %single spacing again
 	  \singlespacing
 	  %provide the top extra space
-	  \my@crtopextra
+	  \getcrtopextra
 	  %copyright year
-	  \copyright{} \my@cryear \par
+	  \copyright{} \getcryear \par
 	  
 	  %copyright name
-	  \my@crauthor \par
+	  \getcrauthor \par
 	  
 	  %copyright blurb
-	  \my@crblurb \par
+	  \getcrblurb \par
 	  
     %provide the bottom extra space 	  
 	  \my@crbottomextra
@@ -677,14 +677,14 @@
 	  %add extra space at top.
 	  \my@frontextra
     %display the title
-	  \my@displaytitle{\my@absname}
+	  \my@displaytitle{\getabsname}
 	  
 	  %put the blurb in a box because it looks weird when the title is really long. Note that the apparent stupidity of the two nested center environments is due to the fact the box also needs to be centered, not just its contents within the box. The width of the box is controlled by setting \abstractblurbwidth.
 	  \begin{minipage}{\my@abstractblurbwidth\textwidth}
 	    \begin{center}
 		    %single spacing for the blurb
 		    \singlespacing
-		    \my@abstractblurb
+		    \getabstractblurb
 	    \end{center}
 	  \end{minipage}
 	\end{center}
@@ -696,7 +696,7 @@
   \vspace{\baselineskip}
   
   %display the abstract
-  \my@abstract
+  \getabstract
   \clearpage
 }
 
@@ -717,7 +717,7 @@
 		    %single spacing 
 		    \singlespacing
 		    %display the dedication
-		    \my@dedication
+		    \getdedication
 	    \end{center}
 	  \end{minipage}
 	\end{center}
@@ -977,10 +977,10 @@
 
 
 %Set the titles of the various lists to the correct values. 
-\renewcommand{\contentsname}{\my@tocname}
-\renewcommand{\listfigurename}{\my@lofname}
-\renewcommand{\listtablename}{\my@lotname}
-\providecommand{\listabbreviationname}{\my@loaname}
+\renewcommand{\contentsname}{\gettocname}
+\renewcommand{\listfigurename}{\getlofname}
+\renewcommand{\listtablename}{\getlotname}
+\providecommand{\listabbreviationname}{\getloaname}
 
 % Anything that comes before the table of contents should not have an entry in the toc. To implement this requirement, I define a flag \my@isthereatoc, defaulting to false.
 
@@ -1090,7 +1090,7 @@
 %------------------------------------------------BIBLIOGRAPHY-----------------------------------------------
 
 % Set the bibliography title
-\renewcommand{\bibname}{\my@bblname}
+\renewcommand{\bibname}{\getbblname}
 
 %Change spacing of bibliography entries (one line added from report.cls).
 \renewenvironment{thebibliography}[1]
@@ -1169,34 +1169,3 @@ Le-gendre Mar-kov-ian Noe-ther-ian No-vem-ber Rie-mann-ian Sep-tem-ber}
 
 \endinput
 %end of unc_dissertation.cls file
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
